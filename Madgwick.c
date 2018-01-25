@@ -34,9 +34,9 @@
 //---------------------------------------------------------------------------------------------------
 // Definitions
 
-#define sampleFreq	512.0f		// sample frequency in Hz original is 512
+//#define sampleFreq	512.0f		// sample frequency in Hz original is 512
 #define betaDef		0.1f		// 2 * proportional gain. Original value is .1f
-//#define sampleFreq	1000.0f		// sample frequency in Hz
+#define sampleFreq	10000.0f		// sample frequency in Hz
 //#define betaDef		.75f		// 2 * proportional gain
 
 //---------------------------------------------------------------------------------------------------

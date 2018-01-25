@@ -43,8 +43,8 @@ float q[4] = {1.0f, 0.0f, 0.0f, 0.0f}; // vector to hold quaternion
 float PI = 3.14159265358979323846f;
 
 float gx,gy,gz,ax,ay,az,mx,my,mz; //Added by DKW 3/31/15
+float roll, pitch,yaw;
 
-bool stopMPU;
 
 static void uart_events_handler(app_uart_evt_t * p_event)
 {
@@ -101,9 +101,9 @@ void mpu_setup(void)
     
     // Setup and configure the MPU with intial values
     mpu_config_t p_mpu_config = MPU_DEFAULT_CONFIG(); // Load default values
-    p_mpu_config.smplrt_div = 19;   // Change sampelrate. Sample Rate = Gyroscope Output Rate / (1 + SMPLRT_DIV). 19 gives a sample rate of 50Hz
+    p_mpu_config.smplrt_div = 0;   // Change sampelrate. Sample Rate = Gyroscope Output Rate / (1 + SMPLRT_DIV). 19 gives a sample rate of 50Hz
     p_mpu_config.accel_config.afs_sel = AFS_2G; // Set accelerometer full scale range to 2G
-  //  p_mpu_config.gyro_config.fs_sel = GFS_2000DPS;   
+    p_mpu_config.gyro_config.fs_sel = GFS_1000DPS;   
 	  ret_code = mpu_config(&p_mpu_config); // Configure the MPU with above values
     APP_ERROR_CHECK(ret_code); // Check for errors in return value 
 	
@@ -114,78 +114,14 @@ void mpu_setup(void)
     APP_ERROR_CHECK(ret_code); // Check for errors in return value
 
 }
-
-void gyro_offset(accel_values_t acc_values, gyro_values_t gyr_values, magn_values_t magn_values)
-	{	
-		uint32_t err_code;
-		int i;
-		
-	for(i=0; i<numberOfTests; i++)
-    {
-      printf("Test Number: %d \r\n", i);
-      
-      err_code = mpu_read_accel(&acc_values);
-      APP_ERROR_CHECK(err_code);
-			
-			CAX = acc_values.x;
-			CAY = acc_values.y;
-			CAZ = acc_values.z;			
-            			
-			err_code = mpu_read_gyro(&gyr_values);
-      APP_ERROR_CHECK(err_code);
-			
-			CGX = gyr_values.x;
-			CGY = gyr_values.y;
-			CGZ = gyr_values.z;	
-			
-	// Read magnetometer values
-      err_code = mpu_read_magnetometer(&magn_values,NULL);
-      APP_ERROR_CHECK(err_code);
 	
-			CMX = magn_values.x;
-      CMY = magn_values.y;
-	   	CMZ = magn_values.z;	
-
-      AXoff += CAX;
-      AYoff += CAY;
-      AZoff += CAZ;			
-      
-			GXoff += CGX;
-      GYoff += CGY;
-      GZoff += CGZ;
-			
-			MXoff += CMX;
-      MYoff += CMY;
-      MZoff += CMZ;
-       
-     // printf("AX:%d \t AY:%d \t AZ:%d \t || GX:%d \t GY:%d \t GZ:%d,\t\r\n", CAX,CAY,CAZ,CGX,CGY,CGZ,CMX,CMY,CMZ);
-			 printf("GX:%d \t GY:%d \t GZ:%d \t || MX:%d \t MY:%d \t MZ:%d,\t\r\n", CGX,CGY,CGZ,CMX,CMY,CMZ);
-			 nrf_delay_ms(25);
-  }
-   
-    AXoff = AXoff/numberOfTests;
-    AYoff = AYoff/numberOfTests;
-    AZoff = AZoff/numberOfTests;
-    GXoff = GXoff/numberOfTests;
-    GYoff = GYoff/numberOfTests;
-    GZoff = GZoff/numberOfTests;
-  	MXoff = MXoff/numberOfTests;
-    MYoff = MYoff/numberOfTests;
-    MZoff = MZoff/numberOfTests;
-    
-  //  printf ("\n\nTest finished, offset values are shown below\n\n\r");
-    printf("AXoff:%d \t, AYoff:%d \t, AZoff:%d \t || GXoff:%d \t, GYoff:%d \t, GZoff:%d \r\n", (int)AXoff, (int)AYoff, (int)AZoff,(int)GXoff,(int)GYoff,(int)GZoff);
-  //  uint32_t sample_number = 0;
-	}	
-	
-
 int main(void)
 {    
 	 
 	 uint32_t err_code;
   
-	 LEDS_CONFIGURE(LEDS_MASK);
-	 LEDS_OFF(LEDS_MASK);
+	// LEDS_CONFIGURE(LEDS_MASK);
+	// LEDS_OFF(LEDS_MASK);
     uart_config();
     mpu_setup();
 	  mpu_init(); 
@@ -197,8 +133,7 @@ int main(void)
 						
     while(1)
     {
-				
-			 			
+						 			
         // Read accelerometer sensor values
           err_code = mpu_read_accel(&acc_values);
           APP_ERROR_CHECK(err_code);
@@ -206,23 +141,53 @@ int main(void)
 		    	CAX = acc_values.x;
 		    	CAY = acc_values.y;
 		    	CAZ = acc_values.z;			
-			  
-			
+			  			
 			  // Read gyro sensor values
           err_code = mpu_read_gyro(&gyr_values);
           APP_ERROR_CHECK(err_code);
 			
 			    CGX = gyr_values.x;
 			    CGY = gyr_values.y;
-		    	CGZ = gyr_values.z;			
-			
+		    	CGZ = gyr_values.z;		
+
+          
 		 	// Read magnetometer values
           err_code = mpu_read_magnetometer(&magn_values,NULL);
-          APP_ERROR_CHECK(err_code);
+			    APP_ERROR_CHECK(err_code);
 					
 					CMX = magn_values.x;
 			    CMY = magn_values.y;
 		    	CMZ = magn_values.z;	
+					
+					AX = ((float)CAX)/16384.00;
+          AY = ((float)CAY)/16384.00; //16384 is just 32768/2 to get our 1G value
+          AZ = ((float)CAZ-16384)/16384.00; //remove 1G before dividing
+					
+					GX = ((float)CGX)/32.768; //32.768 is just 32768/2000 to get us our 1deg/sec value
+          GY = ((float)CGY)/32.768;
+          GZ = ((float)CGZ)/32.768; 
+			
+					ax = AX;
+					ay = AY;
+					az = AZ;
+					gx = GX;
+					gy = GY;
+					gz = GZ;  
+					mx = CMX;
+					my = CMY;
+					mz = CMZ;  //TODO - Do Magnetometer values need to be normalized like Accel and Gyro?
+					
+					
+					MadgwickAHRSupdate(gx,gy,gz,ax,ay,az,mx,my,mz);
+					
+				 // printf("AX:%.3f \t, AY:%.3f \t, AZ:%.3f \t|| GX:%.3f \t, GY:%.3f \t, GZ:%.3f,\t\r\n", ax,ay,az,gx,gy,gz);
+				 yaw = atan2(2*q1*q2-2*q0*q3,2*q0*q0+2*q1*q1-1)*180/PI;
+         pitch = -1*asin(2*q1*q3+2*q0*q2)*180/PI;
+         roll = atan2(2*q2*q3-2*q0*q1,2*q0*q0+2*q3*q3-1)*180/PI;
+				 
+				 printf("roll:%.3f \t, pitch:%.3f \t, yaw:%.3f \t|| MX:%.3f \t, MY:%.3f \t, MZ:%.3f,\t\r\n", roll,pitch,yaw, mx,my,mz);
+			
+			    nrf_delay_ms(5);
 					
 					 // FusionTypes.h example tests
     {
@@ -262,26 +227,26 @@ int main(void)
         FusionAhrsInitialise(&fusionAhrs, 0.5f, 20.0f, 70.0f); // valid magnetic field defined as 20 uT to 70 uT
 
         const FusionVector3 gyroscope = {
-            CGX = 0.0f,
-            CGY = 0.0f,
-            CGZ = 0.0f,
+            gx = 0.0f,
+            gy = 0.0f,
+            gz = 0.0f,
         }; // literal values should be replaced with sensor measurements
 
         const FusionVector3 accelerometer = {
-            CAX = 0.0f,
-            CAY = 0.0f,
-            CAZ = 1.0f,
+            ax = 0.0f,
+            ay = 0.0f,
+            az = 1.0f,
         }; // literal values should be replaced with sensor measurements
 
         const FusionVector3 magnetometer = {
-            CMX = 1.0f,
-            CMY = 0.0f,
-            CMZ = 0.0f,
+            mx = 1.0f,
+            my = 0.0f,
+            mz = 0.0f,
         }; // literal values should be replaced with sensor measurements
 
         FusionAhrsUpdate(&fusionAhrs, gyroscope, accelerometer, magnetometer, 0.01f); // assumes 100 Hz sample rate
-        FusionAhrsUpdate(&fusionAhrs, gyroscope, accelerometer, FUSION_VECTOR3_ZERO, 0.01f); // alternative function call to ignore magnetometer
-        FusionAhrsUpdate(&fusionAhrs, gyroscope, FUSION_VECTOR3_ZERO, FUSION_VECTOR3_ZERO, 0.01f); // alternative function call to ignore accelerometer and magnetometer
+      //  FusionAhrsUpdate(&fusionAhrs, gyroscope, accelerometer, FUSION_VECTOR3_ZERO, 0.01f); // alternative function call to ignore magnetometer
+     //   FusionAhrsUpdate(&fusionAhrs, gyroscope, FUSION_VECTOR3_ZERO, FUSION_VECTOR3_ZERO, 0.01f); // alternative function call to ignore accelerometer and magnetometer
 
         const FusionVector3 earthAcceleration = FusionAhrsCalculateEarthAcceleration(&fusionAhrs);
         if (earthAcceleration.array[0] == 0) {
@@ -315,15 +280,15 @@ int main(void)
     // FusionCompass.c example tests
     {
         const FusionVector3 accelerometer = {
-            CAX = 0.0f,
-            CAY = 0.0f,
-            CAZ = 1.0f,
+            ax = 0.0f,
+            ay = 0.0f,
+            az = 1.0f,
         }; // literal values should be replaced with sensor measurements
 
         const FusionVector3 magnetometer = {
-            CMX = 1.0f,
-            CMY = 0.0f,
-            CMZ = 0.0f,
+            mx = 1.0f,
+            my = 0.0f,
+            mz = 0.0f,
         }; // literal values should be replaced with sensor measurements
 
         const float heading = FusionCompassCalculateHeading(accelerometer, magnetometer);
@@ -335,10 +300,20 @@ int main(void)
 		
 		//See FusionTypes.h
 	   
-   	//	FusionEulerAngles.angle.roll;
+   
+				
+		eulerAngles.angle.roll = FUSION_RADIANS_TO_DEGREES(atan2f(Q.y * Q.z - Q.w * Q.x, qwSquaredMinusHalf + Q.z * Q.z));
+		
+		//roll = FusionEulerAngles(roll);
+		//FusionEulerAngles(pitch);
+	//	FusionEulerAngles(yaw);
+		
+		//printf("cgx %d", CGX);
+		
+		//printf("CMX %d", CGX);
 		
 		
- //   printf("Success!\r\n");
+   // printf("Success!\r\n");
 	//	nrf_delay_ms(25);
 }
 }					

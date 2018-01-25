@@ -22,7 +22,7 @@ Dialog DLL:      TCM.DLL V1.14.4.0
  
 <h2>Project:</h2>
 C:\Users\DK\Documents\Keil Development\nRF_5_SDK_11\examples\nRF52_1Gyro_i2C_wMagno\nRF52_1Gyro_i2C_wMagno\pca10040\arm5_no_packs\twi\nRF52_1Gryro_i2C_wMagno.uvprojx
-Project File Date:  04/11/2017
+Project File Date:  01/23/2018
 
 <h2>Output:</h2>
 Build target 'nrf52832_xxaa'
@@ -33,11 +33,28 @@ compiling main.c...
       eulerAngles.angle.pitch = FUSION_RADIANS_TO_DEGREES(-1.0f * asinf(2.0f * (Q.x * Q.z + Q.w * Q.y)));
 ..\..\..\..\FusionTypes.h(426): warning:  #1035-D: single-precision operand implicitly converted to double-precision
       eulerAngles.angle.yaw = FUSION_RADIANS_TO_DEGREES(atan2f(Q.x * Q.y - Q.w * Q.z, qwSquaredMinusHalf + Q.x * Q.x));
-..\..\..\main.c: 3 warnings, 0 errors
-linking...
-Program Size: Code=16936 RO-data=1336 RW-data=180 ZI-data=8604  
-FromELF: creating hex file...
-".\_build\nrf52832_xxaa.axf" - 0 Error(s), 3 Warning(s).
+..\..\..\main.c(162): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+                                        AX = ((float)CAX)/16384.00;
+..\..\..\main.c(163): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+            AY = ((float)CAY)/16384.00; //16384 is just 32768/2 to get our 1G value
+..\..\..\main.c(164): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+            AZ = ((float)CAZ-16384)/16384.00; //remove 1G before dividing
+..\..\..\main.c(166): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+                                        GX = ((float)CGX)/32.768; //32.768 is just 32768/2000 to get us our 1deg/sec value
+..\..\..\main.c(167): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+            GY = ((float)CGY)/32.768;
+..\..\..\main.c(168): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+            GZ = ((float)CGZ)/32.768; 
+..\..\..\main.c(305): error:  #20: identifier "eulerAngles" is undefined
+                eulerAngles.angle.roll = FUSION_RADIANS_TO_DEGREES(atan2f(Q.y * Q.z - Q.w * Q.x, qwSquaredMinusHalf + Q.z * Q.z));
+..\..\..\main.c(305): error:  #20: identifier "Q" is undefined
+                eulerAngles.angle.roll = FUSION_RADIANS_TO_DEGREES(atan2f(Q.y * Q.z - Q.w * Q.x, qwSquaredMinusHalf + Q.z * Q.z));
+..\..\..\main.c(305): error:  #20: identifier "qwSquaredMinusHalf" is undefined
+                eulerAngles.angle.roll = FUSION_RADIANS_TO_DEGREES(atan2f(Q.y * Q.z - Q.w * Q.x, qwSquaredMinusHalf + Q.z * Q.z));
+..\..\..\main.c(305): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+                eulerAngles.angle.roll = FUSION_RADIANS_TO_DEGREES(atan2f(Q.y * Q.z - Q.w * Q.x, qwSquaredMinusHalf + Q.z * Q.z));
+..\..\..\main.c: 10 warnings, 3 errors
+".\_build\nrf52832_xxaa.axf" - 3 Error(s), 10 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -67,6 +84,7 @@ Package Vendor: NordicSemiconductor
       Source file:   Device\Source\arm\arm_startup_nrf52.s
       Source file:   Device\Source\system_nrf52.c
       Include file:  Device\Include\system_nrf52.h
+Target not created.
 </pre>
 </body>
 </html>
