@@ -37,12 +37,12 @@
  * each algorithm iteration will ramp down from this initial gain to the
  * specified algorithm gain over the initialisation period.
  */
-#define INITIAL_GAIN (10.0f)
+#define INITIAL_GAIN (1.0f)//original 10.0f
 
 /**
  * @brief Initialisation period (in seconds).
  */
-#define INITIALISATION_PERIOD (3.0f)
+#define INITIALISATION_PERIOD (1.0f) //original 3.0f
 
 //------------------------------------------------------------------------------
 // Functions

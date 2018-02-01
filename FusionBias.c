@@ -23,7 +23,7 @@
  * @brief Minimum stationary period (in seconds) after which the the algorithm
  * becomes active and begins sampling the gyroscope bias.
  */
-#define STATIONARY_PERIOD (5.0f)
+#define STATIONARY_PERIOD (1.0f) //original 5.0f
 
 /**
  * @brief Corner frequency (in Hz) of the high-pass filter used to sample the

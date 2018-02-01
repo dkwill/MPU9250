@@ -33,28 +33,27 @@ compiling main.c...
       eulerAngles.angle.pitch = FUSION_RADIANS_TO_DEGREES(-1.0f * asinf(2.0f * (Q.x * Q.z + Q.w * Q.y)));
 ..\..\..\..\FusionTypes.h(426): warning:  #1035-D: single-precision operand implicitly converted to double-precision
       eulerAngles.angle.yaw = FUSION_RADIANS_TO_DEGREES(atan2f(Q.x * Q.y - Q.w * Q.z, qwSquaredMinusHalf + Q.x * Q.x));
-..\..\..\main.c(162): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-                                        AX = ((float)CAX)/16384.00;
-..\..\..\main.c(163): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-            AY = ((float)CAY)/16384.00; //16384 is just 32768/2 to get our 1G value
-..\..\..\main.c(164): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-            AZ = ((float)CAZ-16384)/16384.00; //remove 1G before dividing
-..\..\..\main.c(166): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-                                        GX = ((float)CGX)/32.768; //32.768 is just 32768/2000 to get us our 1deg/sec value
-..\..\..\main.c(167): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-            GY = ((float)CGY)/32.768;
-..\..\..\main.c(168): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-            GZ = ((float)CGZ)/32.768; 
-..\..\..\main.c(305): error:  #20: identifier "eulerAngles" is undefined
-                eulerAngles.angle.roll = FUSION_RADIANS_TO_DEGREES(atan2f(Q.y * Q.z - Q.w * Q.x, qwSquaredMinusHalf + Q.z * Q.z));
-..\..\..\main.c(305): error:  #20: identifier "Q" is undefined
-                eulerAngles.angle.roll = FUSION_RADIANS_TO_DEGREES(atan2f(Q.y * Q.z - Q.w * Q.x, qwSquaredMinusHalf + Q.z * Q.z));
-..\..\..\main.c(305): error:  #20: identifier "qwSquaredMinusHalf" is undefined
-                eulerAngles.angle.roll = FUSION_RADIANS_TO_DEGREES(atan2f(Q.y * Q.z - Q.w * Q.x, qwSquaredMinusHalf + Q.z * Q.z));
-..\..\..\main.c(305): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-                eulerAngles.angle.roll = FUSION_RADIANS_TO_DEGREES(atan2f(Q.y * Q.z - Q.w * Q.x, qwSquaredMinusHalf + Q.z * Q.z));
-..\..\..\main.c: 10 warnings, 3 errors
-".\_build\nrf52832_xxaa.axf" - 3 Error(s), 10 Warning(s).
+..\..\..\main.c(152): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      AX = ((float)CAX) / 16384.00;
+..\..\..\main.c(153): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      AY = ((float)CAY) / 16384.00; //16384 is 32768/2 to get our 1G value
+..\..\..\main.c(154): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      AZ = ((float)CAZ) / 16384.00; //To remove 1G, subtract 16834 before dividing
+..\..\..\main.c(156): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      GX = ((float)CGX) / 32.768; //32.768 is 32768/1000 to get us our 1deg/sec value
+..\..\..\main.c(157): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      GY = ((float)CGY) / 32.768;
+..\..\..\main.c(158): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      GZ = ((float)CGZ) / 32.768;
+..\..\..\main.c(375): warning:  #9-D: nested comment is not allowed
+  /* this function read the accelerometer, gyro and mag value from 
+..\..\..\main.c(514): warning:  #1-D: last line of file ends without a newline
+  // */
+..\..\..\main.c: 11 warnings, 0 errors
+linking...
+Program Size: Code=17448 RO-data=1216 RW-data=96 ZI-data=8600  
+FromELF: creating hex file...
+".\_build\nrf52832_xxaa.axf" - 0 Error(s), 11 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -84,7 +83,6 @@ Package Vendor: NordicSemiconductor
       Source file:   Device\Source\arm\arm_startup_nrf52.s
       Source file:   Device\Source\system_nrf52.c
       Include file:  Device\Include\system_nrf52.h
-Target not created.
 </pre>
 </body>
 </html>

@@ -34,7 +34,6 @@
 .\_build\main.o: ..\..\..\config\twi_sensor_pca10040\nrf_drv_config_validation.h
 .\_build\main.o: ..\..\..\..\mpu9255_register_map.h
 .\_build\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
-.\_build\main.o: ..\..\..\..\Madgwick.h
 .\_build\main.o: ..\..\..\..\Fusion.h
 .\_build\main.o: ..\..\..\..\FusionAhrs.h
 .\_build\main.o: ..\..\..\..\FusionTypes.h
